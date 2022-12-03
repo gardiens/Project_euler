@@ -1,0 +1,47 @@
+# Liste de fonction à vertu géométrique p
+from math import *
+
+
+def pointsenvecteur(M1, M2):
+    # Renvoie un vecteur M1M2
+    x1, Y1 = M1[0], M1[1]
+    x2, Y2 = M2[0], M2[1]
+    return [x2-x1, Y2-Y1]
+
+
+def ps(vec1, vec2):
+    # Produit scalaire quelconque
+    return vec1[0]*vec2[0]+vec1[1]*vec2[1]
+
+
+def norme(vec1):
+    # Norme quelconque
+    return sqrt(norme(vec1, vec1))
+
+
+def recupererangle(vec1, vec2):
+    # récupère l'arccors de vec1, vec2 . On rappelle que l'angle est en radian et est entre 0 et Pi
+    return acos(ps(vec1, vec2)/(norme(vec1)*norme(vec2)))
+
+
+# Idée du programme: On prend la liste de nuage de points, on calcule l'angle entre le point et chacun des points, et normalement l'inclinaison devrait tous être entre 0 et pi/2 ou 0 et -pi/2 . ET CEST BON
+def verifiepointdansconvexe(ListePoint, pointAVerifier):
+    # On se donne une liste de point ListePoint qui est l'enveloppe convexe de notre élément et pointAVerifier est le point qui devrait appartenir à l'enveloppe convexe.
+    # Il renvoie True si c'est vrai, False sinon
+
+    n = len(ListePoint)
+    for k in range(n-1):
+        pointpivot = ListePoint[k]
+        pointavant = ListePoint[k-1]
+        pointapres = ListePoint[k+1]
+        # On récupére les segment intéresants
+        segav = pointsenvecteur(pointavant, pointpivot)
+        segap = pointsenvecteur(pointpivot, pointapres)
+        segtest = pointsenvecteur(pointpivot, pointAVerifier)
+        # On récupère les différents angles
+        angletest = recupererangle(segav, segtest)
+        angleref = recupererangle(segav, segap)
+        # Mais la on a que deux segments, c'est bizarre car  toutes doirts est alors dans l'enveloppe convexe
+        if not ((0 <= angletest and angletest <= angleref) or (pi <= angletest and angletest= > angleref)):
+            return False
+    return True
